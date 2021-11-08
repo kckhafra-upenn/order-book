@@ -9,7 +9,7 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-def process_order(order):
+def process_order(newOrder):
     #Your code here
     # algo_total_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.creator == None).all() if order.sell_currency == "Algorand" ] )
     # eth_total_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.creator == None).all() if order.sell_currency == "Ethereum" ] )
@@ -17,9 +17,27 @@ def process_order(order):
     # eth_unfilled_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.filled == None).all() if order.sell_currency == "Ethereum" ] )
     # print( f"Algo in = {algo_total_in:.2f}" )
     # print( "BUY AMOUNT: ", order["buy_amount"])
-    order_obj = Order( sender_pk=order['sender_pk'],receiver_pk=order['receiver_pk'], buy_currency=order['buy_currency'], sell_currency=order['sell_currency'], buy_amount=order['buy_amount'], sell_amount=order['sell_amount'] )
-    session.add(order_obj)
-    session.commit()
+    for existingOrder in session.query(Order).filter(Order.creator == None).all():
+        if (existingOrder.filled==None and existingOrder.buy_currency==newOrder["buy_currency"]
+        and existingOrder.sell_currency==newOrder["sell_currency"] 
+        and (existingOrder.sell_amount>=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"]):
+            existingOrder.filled==datetime.now()
+            newOrder.filled==datetime.now()
+            newOrder.counterparty_id=existingOrder.counterparty_id
+            existingOrder.counterparty_id=newOrder.counterparty_id
+        
+        order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
+        session.add(order_obj)
+        session.commit()
+
+        
+
+        # print(existingOrder.counterparty_id)
+        #     existingOrder.filled = datetime
+    # order_obj = Order( sender_pk=order['sender_pk'],receiver_pk=order['receiver_pk'], buy_currency=order['buy_currency'], sell_currency=order['sell_currency'], buy_amount=order['buy_amount'], sell_amount=order['sell_amount'] )
+    # session.add(order_obj)
+    # session.commit()
+    # print("time",datetime.now())
     # for ord in session.query(Order).filter(Order.creator == None).all():
     #     print(ord.buy_amount)
 
@@ -29,17 +47,17 @@ def process_order(order):
     
 
 #Generate random order data
-# order = {}
-# platforms = ["Algorand", "Ethereum"] 
-# platform = "Algorand"
-# sender_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
-# receiver_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
+order = {}
+platforms = ["Algorand", "Ethereum"] 
+platform = "Algorand"
+sender_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
+receiver_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
 
-# other_platform = platforms[1-platforms.index(platform)]
-# order['sender_pk'] = sender_pk
-# order['receiver_pk'] = receiver_pk
-# order['buy_currency'] = other_platform
-# order['sell_currency'] = platform
-# order['buy_amount'] = 3
-# order['sell_amount'] = random.randint(1,10)
-# process_order(order)
+other_platform = platforms[1-platforms.index(platform)]
+order['sender_pk'] = sender_pk
+order['receiver_pk'] = receiver_pk
+order['buy_currency'] = other_platform
+order['sell_currency'] = platform
+order['buy_amount'] = 3
+order['sell_amount'] = random.randint(1,10)
+process_order(order)
