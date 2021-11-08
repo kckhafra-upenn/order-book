@@ -17,14 +17,16 @@ def process_order(newOrder):
     # eth_unfilled_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.filled == None).all() if order.sell_currency == "Ethereum" ] )
     # print( f"Algo in = {algo_total_in:.2f}" )
     # print( "BUY AMOUNT: ", order["buy_amount"])
+    newOrder["filled"]=None
+    newOrder["counterparty_id"]=None
     for existingOrder in session.query(Order).filter(Order.creator == None).all():
         if (existingOrder.filled==None and existingOrder.buy_currency==newOrder["buy_currency"]
         and existingOrder.sell_currency==newOrder["sell_currency"] 
-        and (existingOrder.sell_amount>=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"]):
+        and (existingOrder.sell_amount>=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"])):
             existingOrder.filled==datetime.now()
-            newOrder.filled==datetime.now()
-            newOrder.counterparty_id=existingOrder.counterparty_id
-            existingOrder.counterparty_id=newOrder.counterparty_id
+            newOrder["filled"]=datetime.now()
+            newOrder["counterparty_id"]=existingOrder.counterparty_id
+            existingOrder.counterparty_id=newOrder["counterparty_id"]
         
         order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
         session.add(order_obj)
@@ -60,4 +62,5 @@ order['buy_currency'] = other_platform
 order['sell_currency'] = platform
 order['buy_amount'] = 3
 order['sell_amount'] = random.randint(1,10)
+
 process_order(order)
