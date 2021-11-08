@@ -16,7 +16,7 @@ def process_order(order):
     # algo_unfilled_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.filled == None).all() if order.sell_currency == "Algorand" ] )
     # eth_unfilled_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.filled == None).all() if order.sell_currency == "Ethereum" ] )
     # print( f"Algo in = {algo_total_in:.2f}" )
-    print( "BUY AMOUNT: ", order["buy_amount"])
+    # print( "BUY AMOUNT: ", order["buy_amount"])
     order_obj = Order( sender_pk=order['sender_pk'],receiver_pk=order['receiver_pk'], buy_currency=order['buy_currency'], sell_currency=order['sell_currency'], buy_amount=order['buy_amount'], sell_amount=order['sell_amount'] )
     session.add(order_obj)
     session.commit()
@@ -26,7 +26,7 @@ def process_order(order):
     # print( f"Eth in = {eth_total_in:.2f}" )
     # print( f"Algo in = {algo_total_in:.2f}" )
     # print("ORDER: ",order)
-    pass
+    
 
 #Generate random order data
 # order = {}
