@@ -17,6 +17,7 @@ def process_order(newOrder):
     # eth_unfilled_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.filled == None).all() if order.sell_currency == "Ethereum" ] )
     # print( f"Algo in = {algo_total_in:.2f}" )
     # print( "BUY AMOUNT: ", order["buy_amount"])
+    print("NEWORDER: ",newOrder)
     newOrder["filled"]=None
     newOrder["counterparty_id"]=None
     for existingOrder in session.query(Order).filter(Order.creator == None).all():
