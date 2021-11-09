@@ -33,12 +33,22 @@ def process_order(newOrder):
     # print("HEY: ",queryResults)
     for existingOrder in queryResults:
         # print("ID: ",existingOrder.id)
-        if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and ((existingOrder.sell_amount/existingOrder.buy_amount)>=(newOrder["buy_amount"]/newOrder["sell_amount"]))):
+        if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount/existingOrder.buy_amount)>=(newOrder["buy_amount"]/newOrder["sell_amount"])):
             existingOrder.filled=datetime.now()
             lastInserted.filled=datetime.now()
             lastInserted.counterparty_id=existingOrder.id
             existingOrder.counterparty_id=lastInserted.id
             # print(existingOrder.filled, existingOrder.counterparty_id, )
+            if(existingOrder.sell_amount<lastInserted.buy_amount):
+                nOrder = {}
+                nOrder["created_by"]=lastInserted.id
+                nOrder['sender_pk'] = lastInserted.sender_pk
+                nOrder['receiver_pk'] = lastInserted.receiver_pk
+                nOrder['buy_currency'] = lastInserted.buy_currency
+                nOrder['sell_currency'] = lastInserted.sell_currency
+                nOrder['sell_amount'] = lastInserted.sell_amount
+                nOrder['buy_amount'] = (lastInserted.sell_amount-existingOrder.sell_amount)
+                process_order(nOrder)
             break
             # existingOrder.counterparty_id=newOrder["id"]
             # print("BITCH")
