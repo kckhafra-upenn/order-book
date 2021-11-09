@@ -49,15 +49,17 @@ def process_order(newOrder):
                 nOrder['sell_amount'] = lastInserted.sell_amount
                 nOrder['buy_amount'] = (lastInserted.sell_amount-existingOrder.sell_amount)
                 process_order(nOrder)
+            if(lastInserted.sell_amount<existingOrder.buy_amount):
+                nOrder = {}
+                nOrder["created_by"]=existingOrder.id
+                nOrder['sender_pk'] = existingOrder.sender_pk
+                nOrder['receiver_pk'] = existingOrder.receiver_pk
+                nOrder['buy_currency'] = existingOrder.buy_currency
+                nOrder['sell_currency'] = existingOrder.sell_currency
+                nOrder['sell_amount'] = existingOrder.sell_amount
+                nOrder['buy_amount'] = (existingOrder.sell_amount-lastInserted.sell_amount)
+                process_order(nOrder)
             break
-            # existingOrder.counterparty_id=newOrder["id"]
-            # print("BITCH")
-    
-    # lastInserted=session.query(Order).all()[len(session.query(Order).all())-1]
-    # lastInserted.counterparty_id=
-    # for existingOrder in session.query(Order).all():
-    #     print("IDSS: ",existingOrder.id)
-    # print("END: ",end)
 
         
 
