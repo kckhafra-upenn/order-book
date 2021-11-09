@@ -11,7 +11,7 @@ session = DBSession()
 
 
 def process_order(newOrder):
-    print(newOrder)
+    # print(newOrder)
     #Your code here
     # algo_total_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.creator == None).all() if order.sell_currency == "Algorand" ] )
     # eth_total_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.creator == None).all() if order.sell_currency == "Ethereum" ] )
@@ -32,7 +32,7 @@ def process_order(newOrder):
             newOrder["filled"]=datetime.now()
             newOrder["counterparty_id"]=existingOrder.id
             # existingOrder.counterparty_id=newOrder["id"]
-            print("BITCH")
+            # print("BITCH")
     order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
     session.add(order_obj)
     session.commit()
