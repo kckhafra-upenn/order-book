@@ -22,7 +22,7 @@ def process_order(newOrder):
     newOrder["counterparty_id"]=None
     queryResults = session.query(Order).all()
     # newOrder["id"]=
-    print("HEY: ",queryResults)
+    # print("HEY: ",queryResults)
     for existingOrder in queryResults:
         # print("ID: ",existingOrder.id)
         if (existingOrder.filled==None and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount>=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"])):
