@@ -54,24 +54,24 @@ def process_order(newOrder):
                 nOrder['sell_amount'] = child_order_buy_amount/exchange_rate
                 
                 process_order(nOrder)
-                session.add(order_obj)
+                session.add(nOrder)
                 session.commit()
             if(lastInserted.sell_amount<existingOrder.buy_amount):
                 nOrder = {}
-                nOrder["created_by"]=existingOrder.id
-                nOrder['sender_pk'] = existingOrder.sender_pk
-                nOrder['receiver_pk'] = existingOrder.receiver_pk
-                nOrder['buy_currency'] = existingOrder.buy_currency
-                nOrder['sell_currency'] = existingOrder.sell_currency
+                existingOrder.child.created_by=existingOrder.id
+                existingOrder.child.sender_pk = existingOrder.sender_pk
+                existingOrder.child.receiver_pk = existingOrder.receiver_pk
+                existingOrder.child.buy_currency = existingOrder.buy_currency
+                existingOrder.child.sell_currency = existingOrder.sell_currency
                 
-                nOrder['buy_amount'] = (existingOrder.sell_amount-lastInserted.sell_amount)
-                existingOrder.child = lastInserted.child
+                existingOrder.child.buy_amount = (existingOrder.sell_amount-lastInserted.sell_amount)
+                # existingOrder.child = lastInserted.child
                 exchange_rate=existingOrder.buy_amount/existingOrder.sell_amount
                 child_order_buy_amount = existingOrder.buy_amount - lastInserted.sell_amount
-                nOrder['sell_amount'] = child_order_buy_amount/exchange_rate
+                existingOrder.child.sell_amount = child_order_buy_amount/exchange_rate
                 
-                process_order(nOrder)
-                session.add(order_obj)
+                process_order(existingOrder.child)
+                session.add(existingOrder.child)
                 session.commit()
             break
 
