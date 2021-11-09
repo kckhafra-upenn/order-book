@@ -47,6 +47,7 @@ def process_order(newOrder):
                 nOrder['sell_currency'] = lastInserted.sell_currency
                 nOrder['sell_amount'] = lastInserted.sell_amount
                 nOrder['buy_amount'] = (lastInserted.sell_amount-existingOrder.sell_amount)
+                lastInserted.child=nOrder
                 process_order(nOrder)
             if(lastInserted.sell_amount<existingOrder.buy_amount):
                 nOrder = {}
@@ -57,6 +58,7 @@ def process_order(newOrder):
                 nOrder['sell_currency'] = existingOrder.sell_currency
                 nOrder['sell_amount'] = existingOrder.sell_amount
                 nOrder['buy_amount'] = (existingOrder.sell_amount-lastInserted.sell_amount)
+                existingOrder.child=nOrder
                 process_order(nOrder)
             break
 
