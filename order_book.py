@@ -29,11 +29,10 @@ def process_order(newOrder):
     # print(lastInserted.id)
     
     queryResults = session.query(Order).all()
-    # newOrder["id"]=
-    # print("HEY: ",queryResults)
     for existingOrder in queryResults:
         # print("ID: ",existingOrder.id)
-        if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount/existingOrder.buy_amount)>=(newOrder["buy_amount"]/newOrder["sell_amount"])):
+        # if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount/existingOrder.buy_amount)>=(newOrder["buy_amount"]/newOrder["sell_amount"])):
+        if (existingOrder.filled==None and existingOrder.buy_currency==newOrder["sell_currency"] and existingOrder.sell_currency==newOrder["buy_currency"] and (existingOrder.sell_amount/existingOrder.buy_amount)>=(newOrder["buy_amount"]/newOrder["sell_amount"])):
             existingOrder.filled=datetime.now()
             lastInserted.filled=datetime.now()
             lastInserted.counterparty_id=existingOrder.id
@@ -61,20 +60,6 @@ def process_order(newOrder):
                 process_order(nOrder)
             break
 
-        
-
-        
-        #     existingOrder.filled = datetime
-    # order_obj = Order( sender_pk=order['sender_pk'],receiver_pk=order['receiver_pk'], buy_currency=order['buy_currency'], sell_currency=order['sell_currency'], buy_amount=order['buy_amount'], sell_amount=order['sell_amount'] )
-    # session.add(order_obj)
-    # session.commit()
-    # print("time",datetime.now())
-    # for ord in session.query(Order).filter(Order.creator == None).all():
-    #     print(ord.buy_amount)
-
-    # print( f"Eth in = {eth_total_in:.2f}" )
-    # print( f"Algo in = {algo_total_in:.2f}" )
-    # print("ORDER: ",order)
     
 
 #Generate random order data
