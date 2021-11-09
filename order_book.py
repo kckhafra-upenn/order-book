@@ -17,7 +17,7 @@ def process_order(newOrder):
     # eth_unfilled_in = sum( [order.sell_amount for order in session.query(Order).filter(Order.filled == None).all() if order.sell_currency == "Ethereum" ] )
     # print( f"Algo in = {algo_total_in:.2f}" )
     # print( "BUY AMOUNT: ", order["buy_amount"])
-    print("NEWORDER: ",newOrder)
+    # print("NEWORDER: ",newOrder)
     newOrder["filled"]=None
     newOrder["counterparty_id"]=None
     for existingOrder in session.query(Order).filter(Order.creator == None).all():
@@ -29,9 +29,9 @@ def process_order(newOrder):
             newOrder["counterparty_id"]=existingOrder.counterparty_id
             existingOrder.counterparty_id=newOrder["counterparty_id"]
         
-        order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
-        session.add(order_obj)
-        session.commit()
+    order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
+    session.add(order_obj)
+    session.commit()
 
         
 
@@ -50,18 +50,18 @@ def process_order(newOrder):
     
 
 #Generate random order data
-order = {}
-platforms = ["Algorand", "Ethereum"] 
-platform = "Algorand"
-sender_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
-receiver_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
+# order = {}
+# platforms = ["Algorand", "Ethereum"] 
+# platform = "Algorand"
+# sender_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
+# receiver_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
 
-other_platform = platforms[1-platforms.index(platform)]
-order['sender_pk'] = sender_pk
-order['receiver_pk'] = receiver_pk
-order['buy_currency'] = other_platform
-order['sell_currency'] = platform
-order['buy_amount'] = 3
-order['sell_amount'] = random.randint(1,10)
+# other_platform = platforms[1-platforms.index(platform)]
+# order['sender_pk'] = sender_pk
+# order['receiver_pk'] = receiver_pk
+# order['buy_currency'] = other_platform
+# order['sell_currency'] = platform
+# order['buy_amount'] = 3
+# order['sell_amount'] = random.randint(1,10)
 
-process_order(order)
+# process_order(order)
