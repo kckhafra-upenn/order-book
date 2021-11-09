@@ -33,7 +33,7 @@ def process_order(newOrder):
     # print("HEY: ",queryResults)
     for existingOrder in queryResults:
         # print("ID: ",existingOrder.id)
-        if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount<=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"])):
+        if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount>=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"])):
             existingOrder.filled=datetime.now()
             lastInserted.filled=datetime.now()
             lastInserted.counterparty_id=existingOrder.id
