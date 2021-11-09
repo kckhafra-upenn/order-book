@@ -22,20 +22,27 @@ def process_order(newOrder):
     # print("NEWORDER: ",newOrder)
     newOrder["filled"]=None
     newOrder["counterparty_id"]=None
+    order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
+    session.add(order_obj)
+    session.commit()
+    lastInserted=session.query(Order).all()[len(session.query(Order).all())-1]
+    # print(lastInserted.id)
+    
     queryResults = session.query(Order).all()
     # newOrder["id"]=
     # print("HEY: ",queryResults)
     for existingOrder in queryResults:
         # print("ID: ",existingOrder.id)
         if (existingOrder.filled==None and existingOrder.sender_pk==newOrder["sender_pk"] and existingOrder.receiver_pk==newOrder["receiver_pk"] and existingOrder.buy_currency==newOrder["buy_currency"] and existingOrder.sell_currency==newOrder["sell_currency"] and (existingOrder.sell_amount>=newOrder["buy_amount"] or existingOrder.buy_amount>=newOrder["sell_amount"])):
-            existingOrder.filled==datetime.now()
-            newOrder["filled"]=datetime.now()
-            newOrder["counterparty_id"]=existingOrder.id
+            existingOrder.filled=datetime.now()
+            lastInserted.filled=datetime.now()
+            lastInserted.counterparty_id=existingOrder.id
+            existingOrder.counterparty_id=lastInserted.id
+            # print(existingOrder.filled, existingOrder.counterparty_id, )
+            break
             # existingOrder.counterparty_id=newOrder["id"]
             # print("BITCH")
-    order_obj = Order( sender_pk=newOrder['sender_pk'],receiver_pk=newOrder['receiver_pk'], buy_currency=newOrder['buy_currency'], sell_currency=newOrder['sell_currency'], buy_amount=newOrder['buy_amount'], sell_amount=newOrder['sell_amount'] )
-    session.add(order_obj)
-    session.commit()
+    
     # lastInserted=session.query(Order).all()[len(session.query(Order).all())-1]
     # lastInserted.counterparty_id=
     # for existingOrder in session.query(Order).all():
@@ -66,11 +73,17 @@ def process_order(newOrder):
 # receiver_pk = hex(random.randint(0,2**256))[2:] #Generate random string that looks like a public key
 
 # other_platform = platforms[1-platforms.index(platform)]
-# order['sender_pk'] = sender_pk
-# order['receiver_pk'] = receiver_pk
-# order['buy_currency'] = other_platform
-# order['sell_currency'] = platform
-# order['buy_amount'] = random.randint(1,10)
-# order['sell_amount'] = random.randint(1,10)
+# # order['sender_pk'] = sender_pk
+# # order['receiver_pk'] = receiver_pk
+# # order['buy_currency'] = other_platform
+# # order['sell_currency'] = platform
+# # order['buy_amount'] = random.randint(1,10)
+# # order['sell_amount'] = random.randint(1,10)
+# order['sender_pk'] = 'f5e0f3b0595ee86720c3dbe0e9a73b986fe049acea41a9aa2045d9f8898ebd8b'
+# order['receiver_pk'] = '8635437bcdb06d02ffa7285610aa6c7267d433a8e7162749a0f4f38823230960'
+# order['buy_currency'] = 'Ethereum'
+# order['sell_currency'] = 'Algorand'
+# order['buy_amount'] = 2
+# order['sell_amount'] = 7
 
 # process_order(order)
